@@ -1,12 +1,10 @@
 #include <iostream>
 #include <stdio.h>
+#include "Andy.h"
 using namespace std;
 
-unsigned int conver32to16(int clockstate);
-int matchDiff(unsigned short clockstate, unsigned short switch);
-
-
 int switchPushed[10];
+int clockstate;
 int minHit;
 
 int main()
@@ -20,7 +18,7 @@ int main()
 
 	for (int t=0; t<T; t++)
 	{
-		int clockstate = 0x00;
+		clockstate = 0x00;
 	//	unsigned short switch[10];
 		int minHit = 0x7fffffff;
 
@@ -44,9 +42,9 @@ int main()
 
 		for (int i=0; i<3; i++)	
 			generateAllCase(0, i);
-	}
 
-	// unsigned short shortenClock = convert32to16(clockstate);
+		cout << minHit << endl;
+	}
 
 	return 0;
 }
@@ -62,18 +60,33 @@ int sumPushed()
 
 void generateAllCase(int targetSwitch, int hitn)
 {
-	if (targetSwitch == 10)
+	if (targetSwitch == 10 && allClockTwelve()))
 	{
 		int pushed = sumPushed();
 		if (pushed < minHit)
 			minHit = pushed;
 		return;
 	}
-	
-	switchPushed
 
-	
+	switchPushed[targetSwitch] = hitn;
 
-	
+	for (int i=0; i<3; i++)
+		generateAllCase(targetSwitch +1, i);
 }
 
+int allClockTwelve()
+{
+	int clockstate_cp = clockstate;
+
+	for (int i=0; i<10; i++)
+	{
+		int target = (0xff << (2 * i)) && clockstate_cp;
+		target = target >> (2 * i);
+
+		if (target != 0)
+			
+
+		
+	}
+	
+}
