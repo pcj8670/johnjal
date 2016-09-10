@@ -37,6 +37,16 @@ void fill(int size, int base_x, int base_y, int filltype);
 int main()
 {
   cin >> N >> X >> Y;
+  //
+  // if (N == 2)
+  // {
+  //   cout << "2 2 3 3" << endl;
+  //   cout << "2 0 1 3" << endl;
+  //   cout << "4 1 1 5" << endl;
+  //   cout << "4 4 5 5" << endl;
+  //   return 0;
+  // }
+  //
 
   // initialize
   int size = getTwoSquareN(N);
@@ -62,11 +72,12 @@ void solve(int size, int base_x, int base_y, int target_x, int target_y)
   if (size == 1)
     return;
 
-  int filltype = getFillType(size, base_x, base_y, target_x, target_y);
+  int filetype = getFillType(size, base_x, base_y, target_x, target_y);
+  // cout << "[solve] size:" << size << ", base:" << base_x << "," << base_y << ", filetype: " << filetype << endl;
 
   // find next base
   int next_base_x, next_base_y;
-  switch (filltype)
+  switch (filetype)
   {
     case 1:
       next_base_x = base_x;
@@ -86,16 +97,19 @@ void solve(int size, int base_x, int base_y, int target_x, int target_y)
       break;
   }
 
+
   solve(size/2, next_base_x, next_base_y, target_x, target_y);
-  fill(size/2, base_x, base_y, filltype);
+  fill(size, base_x, base_y, filetype);
 }
 
-void fill(int size, int base_x, int base_y, int filltype)
+void fill(int size, int base_x, int base_y, int filetype)
 {
+  // cout << "[fill] size:" << size << ", base:" << base_x << "," << base_y << ", filetype: " << filetype << endl;
+
   if (size == 2)
   {
     ++g_count;
-    switch(filltype)
+    switch(filetype)
     {
       case 1:
         answer[base_y][base_x+1] = answer[base_y+1][base_x+1] = answer[base_y+1][base_x] = g_count;
@@ -114,7 +128,7 @@ void fill(int size, int base_x, int base_y, int filltype)
   else
   {
     size = size/2;
-    switch(filltype)
+    switch(filetype)
     {
       case 1:
         fill(size, base_x + size/2, base_y + size/2, 1);
