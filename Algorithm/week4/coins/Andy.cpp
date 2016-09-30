@@ -1,74 +1,74 @@
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <memory.h>
+
 using namespace std;
 
-int T;
-int N;
+int T,N,M;
 int C[20];
-int M;
 
-int d[20][1001];
-int result;
-
-void init()
-{
-  cin >> N;
-  for (int i=0; i<N; i++)
-  {
-    cin >> C[i];
-  }
-  cin >> M;
-
-  memset(d, 0x00, sizeof(d));
-  result = 0;
-}
+// user
+int d[20][10000];
 
 int main()
 {
-  cin >> T;
+	cin >> T;
 
-  for (int test_case=0; test_case<T; test_case++)
-  {
-    // input
-    init();
+	for (int test_case=0; test_case<T; test_case++)
+	{
+		// input and initiation
+		cin >> N;
+		for (int i=0; i<N; i++)	cin >> C[i];
+		cin >> M;
 
-    // process
-    // 첫번째 코인의 배수에 모두 1씩 경우의 수 추가해주기
-    for (int coin=C[0]; coin<=M; coin+=C[0])
-      d[0][coin]++;
+		// initiation
+		memset(d, 0x00, sizeof(d));
+		int coin = C[0];
+		for (int x = coin; x<=M; x+=coin) d[0][x] = 1;
 
-    // 새로운 코인이 추가될 때 앞의 경우를 고려하여 경우의 수 구하기
-    for (int i=1; i<N; i++)
-    {
-      int coin = C[i];
+		// process
+		for (int step = 1; step<N; step++)
+		{
+			// copy previous step
+			for (int amount=1; amount<=M; amount++)
+				d[step][amount] = d[step-1][amount];
 
-      // 앞의 케이스 복사
-      for (int j=1; j<=M; j++)
-        d[i][j] = d[i-1][j];
+			// lets consider the new coin
+			coin = C[step];
+			for (int amount=1; amount <=M; amount++)
+			{
+				// how many coins can fit in amount?
+				for (int count=1; count*coin<=amount; count++)
+				{
+					int diff = amount - count*coin;
+					
+					if (diff == 0)
+					{
+						d[step][amount]++;
+					}
+					else
+					{
+						if (d[step-1][diff] != 0)
+							d[step][amount] += d[step-1][diff];
 
-      for (int j=1; j<=M; j++) // j를 만들 수 있는 경우의 수는
-      {
-        if (coin < j) // 새로운 코인이 추가될 수 없을때. 앞의 경우의 수와 같다
-        {
-          continue;
-        }
-        else // 그렇지 않을 때에는
-        {
-          for (int k=1; k*coin<=j; k++) // 코인이 k개 들어갈 때 남은 동전과 함께 금액을 구성할 수 있는지 확인해보자
-          {
-            if (j == k*coin) // 코인이 똑 떨어질 때에는 다른 코인이 필요 없다
-              d[i][j]++;
-            else if (d[i-1][j-k*coin]) // 그렇지 않을 때에는 나머지 동전으로 남은 금액을 구성할 수 있어야만 가능하다.
-              d[i][j]++;
-            else
-              continue;
-          }
-        }
-      }
-    }
+					}
+				}
+			
+			}
+			#ifdef DEBUG
+			for (int i=1; i<=M; i++)
+			{
+				cout << d[step][i] << " ";
+			}	
+			cout << endl;
+			#endif
 
-    // result
-    cout << d[N-1][M] << endl;
-  }
+		}	
+		cout << d[N-1][M] << endl;
+	}
 }
+
+		
+
+		
+
